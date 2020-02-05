@@ -2,12 +2,12 @@ const _ = require('lodash');
 const controllers = require('./controllers');
 
 const ROUTE_MAP = {
-    // '/ROUTE': {
-    //     'METHOD': {
-    //         requiresAuth: false,
-    //         handler: undefined
-    //     }
-    // }
+    '/tasks': {
+        'get': {
+            requiresAuth: true,
+            handler: controllers.tasks.getTasks
+        }
+    }
 }
 
 function tagAuthedRoutes(app) {
