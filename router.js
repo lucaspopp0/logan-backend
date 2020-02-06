@@ -43,6 +43,24 @@ const ROUTE_MAP = {
             requiresAuth: true,
             handler: controllers.semesters.delete
         }
+    },
+    '/courses': {
+        'get': {
+            requiresAuth: true,
+            handler: controllers.courses.getAll
+        },
+        'post': {
+            requiresAuth: true,
+            handler: controllers.courses.create
+        },
+        'put': {
+            requiresAuth: true,
+            handler: controllers.courses.update
+        },
+        'delete': {
+            requiresAuth: true,
+            handler: controllers.courses.delete
+        }
     }
 }
 
