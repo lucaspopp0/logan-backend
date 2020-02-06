@@ -13,8 +13,8 @@ const TASK_SCHEMA = joi.object({
     dueDate: joi.string().required(),
     priority: joi.number().integer().min(0).max(4).required(),
     completed: joi.boolean().required(),
-    commitmentId: joi.string(),
     relatedAssignment: joi.string(),
+    commitmentId: joi.string().when('relatedAssignment', { is: joi.exist(), then: joi.required() }),
     completionDate: joi.date().when('completed', { is: true, then: joi.required() })
 });
 
@@ -33,12 +33,10 @@ async function getTasks(req, res) {
 async function createTask(req, res) {
     const uid = req.user;
 
-    // TODO: Validate params
     const task = _.assign({ tid: uuid(), uid }, req.body);
     _.defaults(task, { completed: false });
 
-    const { error } = TASK_SCHEMA.validate(task);
-    if (error) return res.status(400).end(error.details[0].message);
+    validation.check(task, TASK_SCHEMA);
 
     await dynamo.put({ TableName: 'tasks', Item: task }).promise();
     res.json(task).end();

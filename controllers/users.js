@@ -1,12 +1,13 @@
-const dynamo = require('../utils/aws').dynamo;
 const uuid = require('uuid/v1');
+const joi = require('@hapi/joi');
+const dynamo = require('../utils/aws').dynamo;
 const validation = require('../utils/validation')
 
 async function createUser(req, res) {
-    let { email, name } = validation.requireBodyParams(req, ['email', 'name']);
-
-    if (typeof email !== "string" || (email = email.trim()).length === 0) throw new Error('email must be a non-empty string');
-    if (typeof name !== "string" || (name = name.trim()).length === 0) throw new Error('name must be a non-empty string');
+    validation.check(req.body, joi.object({
+        email: joi.string().email().required(),
+        name: joi.string().required()
+    }));
     
     const uid = uuid();
 
@@ -16,7 +17,7 @@ async function createUser(req, res) {
         FilterExpression: 'email = :email'
     }).promise();
 
-    if (existingCheck.Items.length > 0) throw new Error(`User with email '${email}' already exists`);
+    if (existingCheck.Items.length > 0) throw new Error(`User with this email already exists`);
 
     const user = { id: uid, email, name };
 
