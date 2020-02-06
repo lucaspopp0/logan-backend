@@ -3,5 +3,6 @@ module.exports = {
     tasks: require('./tasks'),
     semesters: require('./semesters'),
     courses: require('./courses'),
-    sections: require('./sections')
+    sections: require('./sections'),
+    assignments: require('./assignments')
 };

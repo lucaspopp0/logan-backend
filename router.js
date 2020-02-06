@@ -79,6 +79,24 @@ const ROUTE_MAP = {
             requiresAuth: true,
             handler: controllers.sections.delete
         }
+    },
+    '/assignments': {
+        'get': {
+            requiresAuth: true,
+            handler: controllers.assignments.getAll
+        },
+        'post': {
+            requiresAuth: true,
+            handler: controllers.assignments.create
+        },
+        'put': {
+            requiresAuth: true,
+            handler: controllers.assignments.update
+        },
+        'delete': {
+            requiresAuth: true,
+            handler: controllers.assignments.delete
+        }
     }
 }
 
