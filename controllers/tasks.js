@@ -48,8 +48,26 @@ async function update(req, res) {
     res.json(task).end();
 }
 
+async function del(req, res) {
+    validation.check(req.body, joi.object({ 
+        uid: joi.string(),
+        tid: joi.string().required()
+    }));
+
+    const uid = req.user;
+    const tid = req.body.tid;
+
+    await dynamo.delete({
+        TableName: 'tasks',
+        Key: { uid, tid }
+    }).promise();
+
+    res.end();
+}
+
 module.exports = {
     getAll,
     create,
-    update
+    update,
+    delete: del
 };

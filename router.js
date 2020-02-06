@@ -20,6 +20,10 @@ const ROUTE_MAP = {
         'put': {
             requiresAuth: true,
             handler: controllers.tasks.update
+        },
+        'delete': {
+            requiresAuth: true,
+            handler: controllers.tasks.delete
         }
     },
     '/semesters': {
