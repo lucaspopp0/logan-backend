@@ -3,7 +3,7 @@ const joi = require('@hapi/joi');
 const dynamo = require('../utils/aws').dynamo;
 const validation = require('../utils/validation')
 
-async function createUser(req, res) {
+async function create(req, res) {
     validation.check(req.body, joi.object({
         email: joi.string().email().required(),
         name: joi.string().required()
@@ -30,5 +30,5 @@ async function createUser(req, res) {
 }
 
 module.exports = {
-    createUser
+    create
 };

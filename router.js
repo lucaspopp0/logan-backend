@@ -5,27 +5,27 @@ const ROUTE_MAP = {
     '/users': {
         'post': {
             requiresAuth: false,
-            handler: controllers.users.createUser
+            handler: controllers.users.create
         }
     },
     '/tasks': {
         'get': {
             requiresAuth: true,
-            handler: controllers.tasks.getTasks
+            handler: controllers.tasks.getAll
         },
         'post': {
             requiresAuth: true,
-            handler: controllers.tasks.createTask
+            handler: controllers.tasks.create
         },
         'put': {
             requiresAuth: true,
-            handler: controllers.tasks.updateTask
+            handler: controllers.tasks.update
         }
     },
     '/semesters': {
         'get': {
             requiresAuth: true,
-            handler: controllers.semesters.getSemesters
+            handler: controllers.semesters.getAll
         }
     }
 }

@@ -13,7 +13,7 @@ const SEMESTER_SCHEMA = joi.object({
     endDate: joi.date().required()
 });
 
-async function getSemesters(req, res) {
+async function getAll(req, res) {
     const uid = req.user;
     const semesters = await dynamoUtils.makePaginatedQuery({
         TableName: 'semesters',
@@ -24,5 +24,5 @@ async function getSemesters(req, res) {
 }
 
 module.exports = {
-    getSemesters
+    getAll
 }

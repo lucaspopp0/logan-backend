@@ -18,7 +18,7 @@ const TASK_SCHEMA = joi.object({
     completionDate: joi.date().when('completed', { is: true, then: joi.required() })
 });
 
-async function getTasks(req, res) {
+async function getAll(req, res) {
     const uid = req.user;
     const tasks = await dynamoUtils.makePaginatedQuery({
         TableName: 'tasks',
@@ -28,7 +28,7 @@ async function getTasks(req, res) {
     res.json(tasks).end();
 }
 
-async function createTask(req, res) {
+async function create(req, res) {
     const uid = req.user;
 
     const task = _.assign({ tid: uuid(), uid }, req.body);
@@ -40,7 +40,7 @@ async function createTask(req, res) {
     res.json(task).end();
 }
 
-async function updateTask(req, res) {
+async function update(req, res) {
     const uid = req.user;
     const task = _.assign({}, req.body, { uid });
     validation.check(task, TASK_SCHEMA);
@@ -49,7 +49,7 @@ async function updateTask(req, res) {
 }
 
 module.exports = {
-    getTasks,
-    createTask,
-    updateTask
+    getAll,
+    create,
+    update
 };
