@@ -41,8 +41,26 @@ async function update(req, res) {
     res.json(semester).end();
 }
 
+async function del(req, res) {
+    validation.check(req.body, joi.object({ 
+        uid: joi.string(),
+        sid: joi.string().required()
+    }));
+
+    const uid = req.user;
+    const sid = req.body.sid;
+
+    await dynamo.delete({
+        TableName: 'semesters',
+        Key: { uid, sid }
+    }).promise();
+
+    res.end();
+}
+
 module.exports = {
     getAll,
     create,
-    update
+    update,
+    delete: del
 }

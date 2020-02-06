@@ -38,6 +38,10 @@ const ROUTE_MAP = {
         'put': {
             requiresAuth: true,
             handler: controllers.semesters.update
+        },
+        'delete': {
+            requiresAuth: true,
+            handler: controllers.semesters.delete
         }
     }
 }
