@@ -31,7 +31,7 @@ async function getAll(req, res) {
 async function create(req, res) {
     const uid = req.user;
 
-    const task = _.assign({ tid: uuid(), uid }, req.body);
+    const task = _.assign({}, req.body, { tid: uuid(), uid });
     _.defaults(task, { completed: false });
 
     validation.check(task, TASK_SCHEMA);

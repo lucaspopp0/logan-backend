@@ -26,6 +26,14 @@ const ROUTE_MAP = {
         'get': {
             requiresAuth: true,
             handler: controllers.semesters.getAll
+        },
+        'post': {
+            requiresAuth: true,
+            handler: controllers.semesters.create
+        },
+        'put': {
+            requiresAuth: true,
+            handler: controllers.semesters.update
         }
     }
 }

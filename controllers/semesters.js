@@ -23,6 +23,26 @@ async function getAll(req, res) {
     res.json(semesters).end();
 }
 
+async function create(req, res) {
+    const uid = req.user;
+
+    const semester = _.assign({}, req.body, { uid, sid: uuid() });
+    validation.check(semester, SEMESTER_SCHEMA);
+
+    await dynamo.put({ TableName: 'semesters', Item: semester }).promise();
+    res.json(semester).end();
+}
+
+async function update(req, res) {
+    const uid = req.user;
+    const semester = _.assign({}, req.body, { uid });
+    validation.check(semester, SEMESTER_SCHEMA);
+    await dynamo.put({ TableName: 'semesters', Item: semester }).promise();
+    res.json(semester).end();
+}
+
 module.exports = {
-    getAll
+    getAll,
+    create,
+    update
 }
