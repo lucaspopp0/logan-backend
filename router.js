@@ -21,6 +21,12 @@ const ROUTE_MAP = {
             requiresAuth: true,
             handler: controllers.tasks.updateTask
         }
+    },
+    '/semesters': {
+        'get': {
+            requiresAuth: true,
+            handler: controllers.semesters.getSemesters
+        }
     }
 }
 
