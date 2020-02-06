@@ -16,6 +16,10 @@ const ROUTE_MAP = {
         'post': {
             requiresAuth: true,
             handler: controllers.tasks.createTask
+        },
+        'put': {
+            requiresAuth: true,
+            handler: controllers.tasks.updateTask
         }
     }
 }

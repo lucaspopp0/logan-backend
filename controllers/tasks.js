@@ -22,9 +22,7 @@ async function getTasks(req, res) {
     const uid = req.user;
     const tasks = await dynamoUtils.makePaginatedQuery({
         TableName: 'tasks',
-        ExpressionAttributeValues: {
-            ':uid': uid
-        },
+        ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'
     });
     res.json(tasks).end();
@@ -42,7 +40,16 @@ async function createTask(req, res) {
     res.json(task).end();
 }
 
+async function updateTask(req, res) {
+    const uid = req.user;
+    const task = _.assign({}, req.body, { uid });
+    validation.check(task, TASK_SCHEMA);
+    await dynamo.put({ TableName: 'tasks', Item: task }).promise();
+    res.json(task).end();
+}
+
 module.exports = {
     getTasks,
-    createTask
+    createTask,
+    updateTask
 };
