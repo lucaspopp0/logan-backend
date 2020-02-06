@@ -3,6 +3,15 @@ const joi = require('@hapi/joi');
 const dynamo = require('../utils/aws').dynamo;
 const validation = require('../utils/validation')
 
+async function getMe(req, res) {
+    const uid = req.user;
+    const user = await dynamo.get({
+        TableName: 'users',
+        Key: { id: uid }
+    }).promise();
+    res.json(user.Item).end();
+}
+
 async function create(req, res) {
     validation.check(req.body, joi.object({
         email: joi.string().email().required(),
@@ -30,5 +39,6 @@ async function create(req, res) {
 }
 
 module.exports = {
+    getMe,
     create
 };

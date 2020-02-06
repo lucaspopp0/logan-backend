@@ -8,6 +8,12 @@ const ROUTE_MAP = {
             handler: controllers.users.create
         }
     },
+    '/users/me': {
+        'get': {
+            requiresAuth: true,
+            handler: controllers.users.getMe
+        }
+    },
     '/tasks': {
         'get': {
             requiresAuth: true,
