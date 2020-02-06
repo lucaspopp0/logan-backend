@@ -2,10 +2,20 @@ const _ = require('lodash');
 const controllers = require('./controllers');
 
 const ROUTE_MAP = {
+    '/users': {
+        'post': {
+            requiresAuth: false,
+            handler: controllers.users.createUser
+        }
+    },
     '/tasks': {
         'get': {
             requiresAuth: true,
             handler: controllers.tasks.getTasks
+        },
+        'post': {
+            requiresAuth: true,
+            handler: controllers.tasks.createTask
         }
     }
 }

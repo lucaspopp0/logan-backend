@@ -24,13 +24,13 @@ async function parseUser(req, res, next) {
             const response = await dynamo.scan({
                 TableName: 'users',
                 ExpressionAttributeValues: {
-                    ':id': email
+                    ':email': email
                 },
-                FilterExpression: 'id = :id'
+                FilterExpression: 'email = :email'
             }).promise();
     
             if (response.Count === 1) {
-                req.user = response.Items[0].uid;
+                req.user = response.Items[0].id;
                 next();
             } else if (response.Count === 0) {
                 res.status(400).end('Bearer token doesn\'t belong to a valid user.');

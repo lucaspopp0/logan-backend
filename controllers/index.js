@@ -1,3 +1,4 @@
 module.exports = {
-    tasks: require('./tasks')
+    tasks: require('./tasks'),
+    users: require('./users')
 };
