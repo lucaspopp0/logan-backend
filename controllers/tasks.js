@@ -30,7 +30,7 @@ async function createTask(req, res) {
 
     // TODO: Validate params
     _.assign(task, _.pick(req.body, ['description', 'completed', 'commitmentId', 'relatedAssignment', 'completionDate']));
-    _.defaults(task, { completed: false, description: '' });
+    _.defaults(task, { completed: false });
 
     await dynamo.put({ TableName: 'tasks', Item: task }).promise();
     res.json(task).end();
