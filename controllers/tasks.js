@@ -1,8 +1,22 @@
 const _ = require('lodash');
+const uuid = require('uuid/v1');
+const joi = require('@hapi/joi');
 const dynamo = require('../utils/aws').dynamo;
 const dynamoUtils = require('../utils/aws/dynamoUtils');
 const validation = require('../utils/validation');
-const uuid = require('uuid/v1');
+
+const TASK_SCHEMA = joi.object({
+    uid: joi.string().required(),
+    tid: joi.string().required(),
+    title: joi.string().required(),
+    description: joi.string(),
+    dueDate: joi.string().required(),
+    priority: joi.number().integer().min(0).max(4).required(),
+    completed: joi.boolean().required(),
+    commitmentId: joi.string(),
+    relatedAssignment: joi.string(),
+    completionDate: joi.date().when('completed', { is: true, then: joi.required() })
+});
 
 async function getTasks(req, res) {
     const uid = req.user;
@@ -13,24 +27,18 @@ async function getTasks(req, res) {
         },
         KeyConditionExpression: 'uid = :uid'
     });
-    res.json(tasks);
+    res.json(tasks).end();
 }
 
 async function createTask(req, res) {
     const uid = req.user;
-    const { title, priority, dueDate } = validation.requireBodyParams(req, ['title', 'priority', 'dueDate']);
-
-    const task = { 
-        tid: uuid(), 
-        uid,
-        title,
-        priority,
-        dueDate
-    }
 
     // TODO: Validate params
-    _.assign(task, _.pick(req.body, ['description', 'completed', 'commitmentId', 'relatedAssignment', 'completionDate']));
+    const task = _.assign({ tid: uuid(), uid }, req.body);
     _.defaults(task, { completed: false });
+
+    const { error } = TASK_SCHEMA.validate(task);
+    if (error) return res.status(400).end(error.details[0].message);
 
     await dynamo.put({ TableName: 'tasks', Item: task }).promise();
     res.json(task).end();
