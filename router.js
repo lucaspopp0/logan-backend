@@ -1,7 +1,14 @@
 const _ = require('lodash');
 const controllers = require('./controllers');
+const auth = require('./utils/auth');
 
 const ROUTE_MAP = {
+    '/auth': {
+        'post': {
+            requiresAuth: false,
+            handler: auth.verifyGoogleToken
+        }
+    },
     '/users': {
         'post': {
             requiresAuth: false,

@@ -1,7 +1,22 @@
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const { dynamo } = require('./aws');
-const secretUtils = require('./aws/secretUtils')
+const secretUtils = require('./aws/secretUtils');
+const { OAuth2Client } = require('google-auth-library');
+
+async function verifyGoogleToken(req, res) {
+    const { clientId, clientSecret } = await secretUtils.get('googlecreds');
+
+    const gapi = new OAuth2Client(clientId);
+    const ticket = await gapi.verifyIdTokenAsync({
+        idToken: req.body.idToken,
+        audience: clientId
+    });
+
+    const payload = ticket.getPayload();
+    const token = jwt.sign(payload.email, clientSecret);
+    res.json({ bearer: token }).end();
+}
 
 async function parseUser(req, res, next) {
     if (req.requiresAuth) {
@@ -48,4 +63,4 @@ async function parseUser(req, res, next) {
     }
 }
 
-module.exports = { parseUser };
+module.exports = { verifyGoogleToken, parseUser };
