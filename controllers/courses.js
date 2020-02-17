@@ -22,7 +22,15 @@ async function getAll(req, res) {
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'
     });
-    res.json(courses).end();
+
+    const response = {};
+
+    for (const course of courses) {
+        if (!response[course.sid]) response[course.sid] = [];
+        response[course.sid].push(course);
+    }
+
+    res.json(response).end();
 }
 
 async function create(req, res) {

@@ -24,7 +24,14 @@ async function getAll(req, res) {
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'
     });
-    res.json(sections).end();
+
+    const response = {};
+    for (const section of sections) {
+        if (!response[section.cid]) response[section.cid] = [];
+        response[section.cid].push(section);
+    }
+
+    res.json(response).end();
 }
 
 async function create(req, res) {
