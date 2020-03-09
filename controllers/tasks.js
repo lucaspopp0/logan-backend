@@ -11,7 +11,7 @@ const TASK_SCHEMA = joi.object({
     title: joi.string().required(),
     description: joi.string(),
     dueDate: joi.string().required(),
-    priority: joi.number().integer().min(0).max(4).required(),
+    priority: joi.number().integer().min(-2).max(2).required(),
     completed: joi.boolean().required(),
     relatedAid: joi.string(),
     commitmentId: joi.string().when('relatedAid', { is: joi.exist(), then: joi.required() }),

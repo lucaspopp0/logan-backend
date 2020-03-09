@@ -51,11 +51,12 @@ async function del(req, res) {
     const uid = req.user;
     const aid = req.body.aid;
 
+    // Delete the assignment
     await dynamo.delete({
         TableName: 'assignments',
-        Key: { uid, tid }
+        Key: { uid, aid }
     }).promise();
-
+    
     res.end();
 }
 
