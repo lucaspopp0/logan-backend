@@ -25,6 +25,11 @@ async function getAll(req, res) {
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'
     });
+    
+    tasks.forEach(task => {
+        task.priority = Number(task.priority);
+    });
+
     res.json(tasks).end();
 }
 
