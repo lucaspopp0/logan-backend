@@ -50,10 +50,55 @@ async function del(req, res) {
     const uid = req.user;
     const sid = req.body.sid;
 
-    await dynamo.delete({
-        TableName: 'semesters',
-        Key: { uid, sid }
-    }).promise();
+    if (!req.query.cascade) {
+        await dynamo.delete({
+            TableName: 'semesters',
+            Key: { uid, sid }
+        }).promise();
+    } else {
+        let batchRequests = {
+            'semesters': [{ DeleteRequest: { Key: { uid, sid } } }]
+        };
+
+        const courses = await dynamoUtils.pagination.scan({
+            TableName: 'courses',
+            ExpressionAttributeValues: { ':uid': uid, ':sid': sid },
+            FilterExpression: 'uid = :uid and sid = :sid'
+        });
+
+        if (courses.length > 0) {
+            batchRequests['courses'] = courses.map(course => {
+                return {
+                    DeleteRequest: {
+                        Key: _.pick(course, ['uid', 'cid'])
+                    }
+                }
+            });
+
+            const sections = [];
+
+            for (const course of courses) {
+                sections.push(...(await dynamoUtils.pagination.scan({
+                    TableName: 'sections',
+                    ExpressionAttributeValues: { ':uid': uid, ':cid': course.cid },
+                    FilterExpression: 'uid = :uid and cid = :cid'
+                })));
+            }
+
+            if (sections.length > 0) {
+                batchRequests['sections'] = sections.map(section => {
+                    return { 
+                        DeleteRequest: {
+                            Key: _.pick(section, ['uid', 'secid'])
+                        } 
+                    }
+                });
+            }
+        }
+
+        // Make the paginated delete call
+        await dynamoUtils.pagination.batchWrite({ RequestItems: batchRequests });
+    }
 
     res.end();
 }
