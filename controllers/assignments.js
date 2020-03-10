@@ -51,11 +51,34 @@ async function del(req, res) {
     const uid = req.user;
     const aid = req.body.aid;
 
-    // Delete the assignment
-    await dynamo.delete({
-        TableName: 'assignments',
-        Key: { uid, aid }
-    }).promise();
+    if (!req.query.cascade) {
+        await dynamo.delete({
+            TableName: 'assignments',
+            Key: { uid, aid }
+        }).promise();
+    } else {
+        let batchRequests = {
+            'assignments': [{ DeleteRequest: { Key: { uid, aid }}}]
+        }
+
+        const relatedTasks = await dynamoUtils.pagination.scan({
+            TableName: 'tasks',
+            ExpressionAttributeValues: { ':uid': uid, ':raid': aid },
+            FilterExpression: 'uid = :uid and relatedAid = :raid'
+        });
+
+        if (relatedTasks.length > 0) {
+            batchRequests['tasks'] = relatedTasks.map(task => {
+                return {
+                    DeleteRequest: {
+                        Key: _.pick(task, ['uid', 'tid'])
+                    }
+                }
+            })
+        }
+
+        await dynamoUtils.pagination.batchWrite({ RequestItems: batchRequests });
+    }
     
     res.end();
 }
