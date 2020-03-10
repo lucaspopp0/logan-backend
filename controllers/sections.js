@@ -59,7 +59,7 @@ async function del(req, res) {
     }));
 
     const uid = req.user;
-    const secid = req.body.siecd;
+    const secid = req.body.secid;
 
     await dynamo.delete({
         TableName: 'sections',
