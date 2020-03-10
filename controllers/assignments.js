@@ -16,7 +16,7 @@ const ASSIGNMENT_SCHEMA = joi.object({
 
 async function getAll(req, res) {
     const uid = req.user;
-    const assignments = await dynamoUtils.makePaginatedQuery({
+    const assignments = await dynamoUtils.pagination.query({
         TableName: 'assignments',
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'

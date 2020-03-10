@@ -20,7 +20,7 @@ const TASK_SCHEMA = joi.object({
 
 async function getAll(req, res) {
     const uid = req.user;
-    const tasks = await dynamoUtils.makePaginatedQuery({
+    const tasks = await dynamoUtils.pagination.query({
         TableName: 'tasks',
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'

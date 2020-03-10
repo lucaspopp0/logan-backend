@@ -17,7 +17,7 @@ const COURSE_SCHEMA = joi.object({
 
 async function getAll(req, res) {
     const uid = req.user;
-    const courses = await dynamoUtils.makePaginatedQuery({
+    const courses = await dynamoUtils.pagination.query({
         TableName: 'courses',
         ExpressionAttributeValues: { ':uid': uid },
         KeyConditionExpression: 'uid = :uid'
