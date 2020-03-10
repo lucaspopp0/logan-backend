@@ -60,8 +60,14 @@ async function del(req, res) {
     const uid = req.user;
     const cid = req.body.cid;
 
-    if (req.query.cascade) {
-        // If the user specified a cascading delete, delete related sections as well
+    if (!req.query.cascade) {
+        // If cascading delete not specified, just delete the course
+        await dynamo.delete({
+            TableName: 'courses',
+            Key: { uid, cid }
+        }).promise();
+    } else {
+        // Otherwise, delete related sections as well
         let batchRequests = {
             'courses': [{ DeleteRequest: { Key: { uid, cid } } }]
         };
@@ -86,12 +92,6 @@ async function del(req, res) {
     
         // Make the paginated delete call
         await dynamoUtils.pagination.batchWrite({ RequestItems: batchRequests });
-    } else {
-        // Otherwise, just delete the course alone
-        await dynamo.delete({
-            TableName: 'courses',
-            Key: { uid, cid }
-        }).promise();
     }
 
     res.end();
