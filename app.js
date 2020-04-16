@@ -1,4 +1,5 @@
 // Initializes the server
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const router = require('./router');
@@ -19,6 +20,11 @@ app.use((_, res, next) => {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+    req.client = _.get(req, ['headers', 'client-type']);
+    next();
+});
 
 router.tagAuthedRoutes(app);
 app.use(authUtils.parseUser);

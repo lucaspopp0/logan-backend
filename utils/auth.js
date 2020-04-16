@@ -5,7 +5,24 @@ const secretUtils = require('./aws/secretUtils');
 const { OAuth2Client } = require('google-auth-library');
 
 async function verifyGoogleToken(req, res) {
-    const { clientId, clientSecret } = await secretUtils.get('googlecreds');
+    const webCreds = await secretUtils.get('web/googlecreds');
+
+    let clientId;
+    const clientSecret = webCreds.clientSecret;
+
+    switch (req.client) {
+        case 'web':
+            clientId = webCreds.clientId;
+            break;
+        
+        case 'ios':
+            const iosCreds = await secretUtils.get('ios/googlecreds');
+            clientId = iosCreds.clientId;
+            break;
+
+        default:
+            throw new Error('Invalid client type or not specified');
+    }
 
     const gapi = new OAuth2Client(clientId);
     const ticket = await gapi.verifyIdTokenAsync({
@@ -26,7 +43,7 @@ async function parseUser(req, res, next) {
             return;
         }
 
-        const { clientSecret } = await secretUtils.get('googlecreds');
+        const { clientSecret } = await secretUtils.get('web/googlecreds');
     
         try {
             const token = authHeader.substring(7);
