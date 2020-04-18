@@ -32,7 +32,19 @@ async function verifyGoogleToken(req, res) {
 
     const payload = ticket.getPayload();
     const token = jwt.sign(payload.email, clientSecret);
-    res.json({ bearer: token }).end();
+
+    const existingUsers = await dynamo.scan({
+        TableName: 'users',
+        ExpressionAttributeValues: {
+            ':email': payload.email
+        },
+        FilterExpression: 'email = :email'
+    }).promise();
+
+    res.json({
+        bearer: token,
+        exists: existingUsers.Count !== 0
+    }).end();
 }
 
 async function parseUser(req, res, next) {
