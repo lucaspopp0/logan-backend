@@ -17,9 +17,12 @@ async function create(req, res) {
         email: joi.string().email().required(),
         name: joi.string().required()
     }));
+
+    const { email, name } = req.body;
     
     const uid = uuid();
 
+    // Check if the user already exists
     const existingCheck = await dynamo.scan({
         TableName: 'users',
         ExpressionAttributeValues: { ':email': email },
