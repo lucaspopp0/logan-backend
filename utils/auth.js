@@ -41,10 +41,20 @@ async function verifyGoogleToken(req, res) {
         FilterExpression: 'email = :email'
     }).promise();
 
-    res.json({
-        bearer: token,
-        exists: existingUsers.Count !== 0
-    }).end();
+    const exists = existingUsers.Count !== 0;
+
+    if (exists) {
+        res.json({
+            bearer: token,
+            exists,
+            user: existingUsers.Items[0]
+        }).end();
+    } else {
+        res.json({
+            bearer: token,
+            exists
+        }).end();
+    }
 }
 
 async function parseUser(req, res, next) {
