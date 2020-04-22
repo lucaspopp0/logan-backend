@@ -9,16 +9,22 @@ const ROUTE_MAP = {
             handler: auth.verifyGoogleToken
         }
     },
-    '/users': {
+    '/users/clean': {
         'post': {
-            requiresAuth: false,
-            handler: controllers.users.create
+            requiresAuth: true,
+            handler: controllers.users.clean
         }
     },
     '/users/me': {
         'get': {
             requiresAuth: true,
             handler: controllers.users.getMe
+        }
+    },
+    '/users': {
+        'post': {
+            requiresAuth: false,
+            handler: controllers.users.create
         }
     },
     '/tasks': {
