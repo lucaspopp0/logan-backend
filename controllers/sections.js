@@ -11,8 +11,8 @@ const SECTION_SCHEMA = joi.object({
     cid: joi.string().required(),
     name: joi.string().required(),
     location: joi.string().allow(''),
-    weeklyRepeat: joi.number().integer(),
-    daysOfWeek: joi.string().regex(/^[0-6]{1,7}$/),
+    weeklyRepeat: joi.number().integer().min(1).required(),
+    daysOfWeek: joi.string().regex(/^[0-6]{1,7}$/).required(),
     start: joi.date().required(),
     end: joi.date().required()
 });
