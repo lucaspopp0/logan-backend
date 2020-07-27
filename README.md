@@ -1,6 +1,6 @@
 # logan-backend
 
-The backend API for Logan
+The backend API for Logan. This is an unfinished project.
 
 ## Setup
 
