@@ -1,6 +1,8 @@
 # logan-backend
 
-The backend API for Logan. This is an unfinished project.
+The backend API for Logan. This is an unfinished project and hasn't been legitimately updated since early 2020.
+
+This is intended to demonstrate an understanding of backend development using Express and Node.js. Minimal testing is present, due to this being mainly a personal exercise.
 
 ## Setup
 
